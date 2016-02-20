@@ -2,30 +2,35 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
-use BlogApp\Interactor\AddCommentInteractor;
+use BlogApp\CommandHandler\AddCommentCommandHandler;
 use BlogApp\Boundary\CommentsRepository;
 use BlogApp\Boundary\PostsRepository;
-use BlogApp\Interactor\CreatePostInteractor;
-use BlogApp\Entity\Post;
-use BlogApp\Interactor\ListPostsInteractor;
-use BlogApp\Request\AddCommentRequest;
-use BlogApp\Request\CreatePostRequest;
+use BlogApp\CommandHandler\CreatePostCommandHandler;
+use BlogApp\Infrastructure\InMemoryPostsQueryRepository;
+use BlogApp\Projector\PostsListProjector;
+use BlogApp\Query\ListPostsQuery;
+use BlogApp\Command\AddCommentCommand;
+use BlogApp\Command\CreatePostCommand;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 abstract class BaseContext implements Context, SnippetAcceptingContext
 {
+    /** @var EventDispatcher */
+    private $eventDispatcher;
+
     /** @var PostsRepository */
     private $postsRepository;
 
     /** @var CommentsRepository */
     private $commentsRepository;
 
-    /** @var CreatePostInteractor */
+    /** @var CreatePostCommandHandler */
     private $createPost;
 
-    /** @var ListPostsInteractor */
+    /** @var ListPostsQuery */
     private $listPosts;
 
-    /** @var AddCommentInteractor */
+    /** @var AddCommentCommandHandler */
     private $addComment;
 
     /** @var string */
@@ -40,12 +45,16 @@ abstract class BaseContext implements Context, SnippetAcceptingContext
 
     public function __construct()
     {
+        $this->eventDispatcher = new EventDispatcher();
         $this->postsRepository = $this->createPostsRepository();
         $this->commentsRepository = $this->createCommentsRepository();
+        $postsQueryRepository = new InMemoryPostsQueryRepository();
 
-        $this->createPost = new CreatePostInteractor($this->postsRepository);
-        $this->listPosts = new ListPostsInteractor($this->postsRepository, $this->commentsRepository);
-        $this->addComment = new AddCommentInteractor($this->postsRepository, $this->commentsRepository);
+        $this->createPost = new CreatePostCommandHandler($this->postsRepository, $this->eventDispatcher);
+        $this->listPosts = new ListPostsQuery($postsQueryRepository);
+        $this->addComment = new AddCommentCommandHandler($this->postsRepository, $this->commentsRepository, $this->eventDispatcher);
+
+        $this->eventDispatcher->addSubscriber(new PostsListProjector($postsQueryRepository));
     }
 
     /**
@@ -71,7 +80,7 @@ abstract class BaseContext implements Context, SnippetAcceptingContext
      */
     public function thereIsAPostTitled(string $title)
     {
-        $this->postsRepository->add(new Post($title, '', date(DateTime::ATOM)));
+        $this->createPost->handle(new CreatePostCommand($title, ''));
         $this->postTitle = $title;
     }
 
@@ -81,7 +90,7 @@ abstract class BaseContext implements Context, SnippetAcceptingContext
     public function iCreatePostTitledWithAContent(string $title, string $content)
     {
         try {
-            $this->createPost->handle(new CreatePostRequest($title, $content));
+            $this->createPost->handle(new CreatePostCommand($title, $content));
         } catch (Exception $exception) {
         }
     }
@@ -136,7 +145,7 @@ abstract class BaseContext implements Context, SnippetAcceptingContext
      */
     public function iAddCommentToIt(string $content)
     {
-        $this->addComment->handle(new AddCommentRequest($this->postTitle, $content));
+        $this->addComment->handle(new AddCommentCommand($this->postTitle, $content));
     }
 
     /**
@@ -153,7 +162,7 @@ abstract class BaseContext implements Context, SnippetAcceptingContext
     public function iAddCommentToPostTitled(string $content, string $postTitle)
     {
         try {
-            $this->addComment->handle(new AddCommentRequest($postTitle, $content));
+            $this->addComment->handle(new AddCommentCommand($postTitle, $content));
         } catch (Exception $exception) {
         }
     }

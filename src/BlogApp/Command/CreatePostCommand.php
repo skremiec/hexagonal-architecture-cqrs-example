@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace BlogApp\Request;
+namespace BlogApp\Command;
 
 use DateTime;
 
-class AddCommentRequest
+class CreatePostCommand
 {
     /** @var string */
-    private $postTitle;
+    private $title;
 
     /** @var string */
     private $content;
@@ -15,16 +15,16 @@ class AddCommentRequest
     /** @var string */
     private $createdAt;
 
-    public function __construct(string $postTitle, string $content)
+    public function __construct(string $title, string $content)
     {
-        $this->postTitle = $postTitle;
-        $this->content = $content;
+        $this->title = trim($title);
+        $this->content = trim($content);
         $this->createdAt = date(DateTime::ATOM);
     }
 
-    public function getPostTitle():string
+    public function getTitle():string
     {
-        return $this->postTitle;
+        return $this->title;
     }
 
     public function getContent():string

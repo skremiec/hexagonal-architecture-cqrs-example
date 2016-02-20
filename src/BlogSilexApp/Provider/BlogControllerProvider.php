@@ -14,7 +14,7 @@ class BlogControllerProvider implements ControllerProviderInterface
     public function connect(Application $app):ControllerCollection
     {
         $app['create_post.controller'] = $app->share(function (Application $app) {
-            return new CreatePostController($app['create_post']);
+            return new CreatePostController($app['command_bus']);
         });
 
         $app['list_posts.controller'] = $app->share(function (Application $app) {
@@ -22,7 +22,7 @@ class BlogControllerProvider implements ControllerProviderInterface
         });
 
         $app['add_comment.controller'] = $app->share(function (Application $app) {
-            return new AddCommentController($app['add_comment']);
+            return new AddCommentController($app['command_bus']);
         });
 
         /** @var ControllerCollection $controllers */

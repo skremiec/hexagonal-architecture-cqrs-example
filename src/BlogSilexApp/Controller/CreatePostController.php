@@ -2,22 +2,22 @@
 
 namespace BlogSilexApp\Controller;
 
-use BlogApp\Interactor\CreatePostInteractor;
 use BlogApp\Exception\AlreadyExistsException;
-use BlogApp\Request\CreatePostRequest;
+use BlogApp\Command\CreatePostCommand;
 use InvalidArgumentException;
+use League\Tactician\CommandBus;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class CreatePostController
 {
-    /** @var CreatePostInteractor */
-    private $createPost;
+    /** @var CommandBus */
+    private $commandBus;
 
-    public function __construct(CreatePostInteractor $createPost)
+    public function __construct(CommandBus $commandBus)
     {
-        $this->createPost = $createPost;
+        $this->commandBus = $commandBus;
     }
 
     public function createAction(HttpRequest $request):HttpResponse
@@ -25,7 +25,7 @@ class CreatePostController
         $data = json_decode($request->getContent(), true) + array_fill_keys(['title', 'content'], '');
 
         try {
-            $this->createPost->handle(new CreatePostRequest($data['title'], $data['content']));
+            $this->commandBus->handle(new CreatePostCommand($data['title'], $data['content']));
         } catch (InvalidArgumentException $exception) {
             return JsonResponse::create(['error' => $exception->getMessage()], HttpResponse::HTTP_BAD_REQUEST);
         } catch (AlreadyExistsException $exception) {

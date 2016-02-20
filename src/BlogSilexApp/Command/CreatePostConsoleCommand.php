@@ -2,10 +2,10 @@
 
 namespace BlogSilexApp\Command;
 
-use BlogApp\Interactor\CreatePostInteractor;
 use BlogApp\Exception\AlreadyExistsException;
-use BlogApp\Request\CreatePostRequest;
+use BlogApp\Command\CreatePostCommand;
 use InvalidArgumentException;
+use League\Tactician\CommandBus;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,14 +13,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CreatePostConsoleCommand extends Command
 {
-    /** @var CreatePostInteractor */
-    private $createPost;
+    /** @var CommandBus */
+    private $commandBus;
 
-    public function __construct(CreatePostInteractor $createPost)
+    public function __construct(CommandBus $commandBus)
     {
         parent::__construct();
 
-        $this->createPost = $createPost;
+        $this->commandBus = $commandBus;
     }
 
     protected function configure()
@@ -35,10 +35,10 @@ class CreatePostConsoleCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $request = new CreatePostRequest($input->getArgument('title'), $input->getArgument('content'));
+        $request = new CreatePostCommand($input->getArgument('title'), $input->getArgument('content'));
 
         try {
-            $this->createPost->handle($request);
+            $this->commandBus->handle($request);
             $message = sprintf('Post <info>%s</info> created', $request->getTitle());
         } catch (InvalidArgumentException $exception) {
             $message = sprintf('<error>Error: %s</error>', $exception->getMessage());

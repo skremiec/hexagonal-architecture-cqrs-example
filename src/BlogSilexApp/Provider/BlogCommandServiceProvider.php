@@ -11,7 +11,7 @@ class BlogCommandServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['create_post.console_command'] = $app->share(function (Application $app) {
-            return new CreatePostConsoleCommand($app['create_post']);
+            return new CreatePostConsoleCommand($app['command_bus']);
         });
     }
 
