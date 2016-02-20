@@ -1,0 +1,12 @@
+#!/usr/bin/env php
+<?php
+
+use BlogSilexApp\BlogConsoleApplication;
+use Symfony\Component\Console\Input\ArgvInput;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$values = require_once __DIR__ . '/../app/config.php';
+
+$app = new BlogConsoleApplication($values);
+$app->run(new ArgvInput());

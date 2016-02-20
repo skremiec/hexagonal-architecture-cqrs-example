@@ -1,0 +1,11 @@
+default:
+  suites:
+    blog:
+      contexts:
+        - InMemoryContext
+
+database:
+  suites:
+    blog:
+      contexts:
+        - DatabaseContext
