@@ -1,0 +1,8 @@
+default:
+  suites:
+    blog:
+      contexts:
+        - BlogContext:
+          - '@posts.repository'
+          - '@comments.repository'
+      services: BlogApp\Container::create

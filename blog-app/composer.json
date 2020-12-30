@@ -1,0 +1,30 @@
+{
+  "name": "skremiec/blog-app",
+  "type": "library",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Sebastian Kremiec",
+      "email": "sebastian.kremiec@gmail.com"
+    }
+  ],
+  "scripts": {
+    "test": "behat"
+  },
+  "autoload": {
+    "psr-4": {
+      "BlogApp\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "BlogApp\\": "features/bootstrap/"
+    }
+  },
+  "require": {
+    "php": "^7.3|^8.0"
+  },
+  "require-dev": {
+    "behat/behat": "^3.0"
+  }
+}

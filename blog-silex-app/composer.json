@@ -1,0 +1,42 @@
+{
+  "name": "skremiec/blog-silex-app",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Sebastian Kremiec",
+      "email": "sebastian.kremiec@gmail.com"
+    }
+  ],
+  "scripts": {
+    "create-post": "bin/console post:create",
+    "serve": "php -S 0.0.0.0:8000 -t web",
+    "test": "behat"
+  },
+  "autoload": {
+    "psr-4": {
+      "BlogSilexApp\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "BlogSilexApp\\": "features/bootstrap/"
+    }
+  },
+  "require": {
+    "php": "^7.3|^8.0",
+    "ext-json": "*",
+    "ext-pdo": "*",
+    "skremiec/blog-app": "*",
+    "silex/silex": "^2.0",
+    "symfony/console": "^4.4"
+  },
+  "require-dev": {
+    "behat/behat": "^3.0"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../blog-app"
+    }
+  ]
+}

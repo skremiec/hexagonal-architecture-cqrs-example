@@ -1,0 +1,12 @@
+default:
+  autoload:
+    '': ../blog-app/features/bootstrap
+  suites:
+    blog:
+      paths:
+        -  ../blog-app/features
+      contexts:
+        - BlogContext:
+          - '@posts.repository'
+          - '@comments.repository'
+      services: BlogSilexApp\Container::create
