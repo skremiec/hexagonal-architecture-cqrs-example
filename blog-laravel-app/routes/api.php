@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\AddCommentController;
+use App\Http\Controllers\CreatePostController;
+use App\Http\Controllers\ListPostsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/', fn () => redirect()->route('posts.list'));
+
+Route::get('/posts', ListPostsController::class)->name('posts.list');
+Route::post('/posts', CreatePostController::class)->name('posts.create');
+Route::post('/posts/{title}/comments', AddCommentController::class)->name('comment.add');

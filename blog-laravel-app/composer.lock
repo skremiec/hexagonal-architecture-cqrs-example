@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9c491b8531eec05ba41a11d9276a5749",
+    "content-hash": "cc47d223670919360890f5e1b442a779",
     "packages": [
         {
             "name": "brick/math",
@@ -3183,6 +3183,46 @@
                 }
             ],
             "time": "2023-11-08T05:53:05+00:00"
+        },
+        {
+            "name": "skremiec/blog-app",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../blog-app",
+                "reference": "388503b03de956817457ddfd63e1f53147559a8e"
+            },
+            "require": {
+                "php": "^7.3|^8.0"
+            },
+            "require-dev": {
+                "behat/behat": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BlogApp\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "BlogApp\\": "features/bootstrap/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "behat"
+                ]
+            },
+            "authors": [
+                {
+                    "name": "Sebastian Kremiec",
+                    "email": "sebastian.kremiec@gmail.com"
+                }
+            ],
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "symfony/console",
